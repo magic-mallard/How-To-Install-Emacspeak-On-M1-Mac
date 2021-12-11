@@ -1,0 +1,117 @@
+
+* Emacspeak on m1 Mac  | Installation Guide
+This is a guide to installing emacs and emacspeak on the m1 macs. This guide follows the process that I used to get emacspeak working on my macbook air m1 and works for me perfectly.
+This being said, I am not responsible for anything that you do on your system. If the steps in this guide turn your computer into a flying, talking mushroom, this is entirely on you.
+
+
+In addition, whilst I went through these steps to install emacspeak on my system. I did not write this as I went. I haven't checked every step in this guide for typos yet. I hope to do this soon. Please
+follow the written instructions and use the commands as a guide. If you just blindly copy and paste this untestedness may cause you some issues. Hopefuly not, but a possibility.
+
+* Xcode and Homebrew
+If you already have homebrew and Xcode installed you can probably skip this section. Just make sure they are up to date.
+
+
+The first thing we need is Xcode. You can probably get away with only installing the command line tools but I have the full version installed. it is available from the app store. Go and get it and probably a cup
+of tea while it installs - it is quite large.
+
+
+Once that has finished, we can install homebrew.  Open your terminal app and paste the following command in. It may ask ffor your password.
+
+#+begin_src sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#+end_src
+
+Once that has finished we need to add /opt/homebrew/bin to your environment path. If you know how to do this, go and do this in the way that best suits you. If you don't, run the following
+line in your terminal. It will add to the bottom of ~/.zshrc the command to add /opt/homebrew/bin to your path.
+
+#+begin_src sh
+echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.zshrc 
+#+end_src
+
+Now test that homebrew is working properly by running
+#+begin_src sh 
+brew --version
+#+end_src
+If you don't see some homebrew version information, something has gone wrong. To rule out issues with your path variable try '/opt/homebrew/bin/brew --version' . If that works the issue is with adding /opt/homebrew/bin to path.
+
+* Installing Sox
+For emacspeak to be able to play auditory icons you need a program that can play wav viles from command line. Sox package has the play program that does this.
+
+Install it with
+#+begin_src sh 
+brew install sox 
+#+end_src
+Ace! if that worked correctly we are now ready to install emacs and emacspeak.
+
+* Installing Emacs
+I'm using the d12frosted/emacs-plus tap to get my emacs. It works very well for me. run the following in terminal to add the tap and install it.
+
+#+begin_src sh
+brew tap d12frosted/emacs-plus
+brew install emacs-plus@28 
+#+end_src
+
+Cool. Once that is done you should be able to run the 'emacs' command in terminal to open emacs. it wont' have emacspeak yet but this is a good tester to see if everything is working so far. 
+
+* Getting Emacspeak
+In a web browser, go to the emacspeak home page ([[https://github.com/tvraman/emacspeak/releases/download/55.0/emacspeak-55.0.tar.bz2][here]])and download the latest emacspeak.tar.bz2 file into yoru downloads folder.
+
+Once you've got it do the following.
+
+#+begin_src sh
+cd ~/Downloads 
+#+end_src
+
+We then need to use the 'tar -xjf' command to unpack the meacspeak-XX.tar.bz2 file. Your version of emacspeak is possibly differrent from mine. You need to edit this command for the file you just downloaded.
+
+#+begin_src sh
+tar -xjf emacspeak-XX.tar.bz2
+mv emacspeak-XX/ emacspeak 
+#+end_src
+
+and then  you need to change directory into the file we just unpacked
+#+begin_src sh
+cd emacspeak 
+#+end_src
+Awesome! Now let's install it.
+
+Run in terminal:
+#+begin_src sh
+make config
+make 
+#+end_src
+And wait for that to finish.
+
+Now, you are free to move this emacspeak file wherever you like. I perfer to put mine in ~/.emacs.d/ but you don't have to. You just need to remember where it is as we will need this information in a bit.
+
+You can use the following command to move emacspeak into ~/.emacs.d
+
+#+begin_src sh
+mv ~/Downloads/emacspeak ~/.emacs.d/
+#+end_src
+
+* Creating Init.el 
+We need to create an init.el file to configure emacs to use emacspeak.
+
+You can run the following command in terminal to do this.
+
+#+begin_src sh
+echo """
+(load-file "~/.emacs.d/emacspeak/lisp/emacspeak-setup.el")
+(load-file "~/.emacs.d/emacspeak/lisp/mac-voices")
+(setq emacspeak-play-program "/opt/homebrew/bin/play")
+(setq emacspeak-auditory-icon-function 'emacspeak-play-auditory-icon)
+(dtk-set-rate 400 t)
+""" > ~/.emacs.d/init.el 
+#+end_src
+
+You should then try loading emacs up and hopefully things just work. If they don't please get itno contact with me and I'll try to help :)
+
+* Notes
+The line in init.el
+#+begin_src elisp 
+(setq emacspeak-auditory-icon-function 'emacspeak-play-auditory-icon)
+#+end_src
+Is needed because for some reason emacspeak-serve-auditory-icon - the default - doesn't seem to work. I'm aware that this is not the way emacspeak is supposed to work
+but this has caused me no problems and everything is still fast and responsive. I'm trying to find out in more detail why this works and the default doesn't. I'll update this page
+with any addition or changes in my setup in regards to this. 

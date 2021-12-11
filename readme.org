@@ -96,13 +96,13 @@ We need to create an init.el file to configure emacs to use emacspeak.
 You can run the following command in terminal to do this.
 
 #+begin_src sh
-echo """
-(load-file "~/.emacs.d/emacspeak/lisp/emacspeak-setup.el")
-(load-file "~/.emacs.d/emacspeak/lisp/mac-voices")
-(setq emacspeak-play-program "/opt/homebrew/bin/play")
+echo "
+(load-file \"~/.emacs.d/emacspeak/lisp/emacspeak-setup.el\")
+(load-file \"~/.emacs.d/emacspeak/lisp/mac-voices\")
+(setq emacspeak-play-program\" /opt/homebrew/bin/play\")
 (setq emacspeak-auditory-icon-function 'emacspeak-play-auditory-icon)
 (dtk-set-rate 400 t)
-""" > ~/.emacs.d/init.el 
+" > ~/.emacs.d/init.el
 #+end_src
 
 You should then try loading emacs up and hopefully things just work. If they don't please get itno contact with me and I'll try to help :)
